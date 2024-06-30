@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app_with_clean_architecture/config/themes/dark_theme.dart';
 import 'package:news_app_with_clean_architecture/config/themes/light_theme.dart';
+import 'package:news_app_with_clean_architecture/core/utils/functions/setup_service_locator.dart';
+import 'package:news_app_with_clean_architecture/features/get_news/data/repositories/news_repository_impl.dart';
+import 'package:news_app_with_clean_architecture/features/get_news/domain/use_cases/get_news_use_case.dart';
 import 'package:news_app_with_clean_architecture/features/get_news/presentation/pages/news_screen.dart';
 import 'config/routes/app_routes.dart';
 import 'features/get_news/data/models/enums/theme_state.dart';
@@ -16,29 +19,37 @@ class NewsApp extends StatelessWidget {
     return BlocProvider(
       create: (context) => SwitchThemeCubit()..switchTheme(ThemeState.initial),
       child: BlocBuilder<SwitchThemeCubit, SwitchThemeState>(
-        builder: (context, state) {
-           if (state is DarkTheme) {
-            return MaterialApp(
-              debugShowCheckedModeBanner: false,
-              routes: appRoutes,
-              theme: darkTheme,
-              home: MultiBlocProvider(providers: [
-                BlocProvider(create: (context) => GetNewsCubit()..getNews()),
-              ], child: const NewsScreen()),
-            );
-          }
-           else {
-             return MaterialApp(
-               debugShowCheckedModeBanner: false,
-               routes: appRoutes,
-               theme: lightTheme,
-               home: MultiBlocProvider(providers: [
-                 BlocProvider(create: (context) => GetNewsCubit()..getNews()),
-               ], child: const NewsScreen()),
-             );
-           }
+          builder: (context, state) {
+        if (state is DarkTheme) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            routes: appRoutes,
+            theme: darkTheme,
+            home: MultiBlocProvider(providers: [
+              BlocProvider(
+                  create: (context) => GetNewsCubit(
+                      getNewsUseCase: GetNewsUseCase(
+                          repository: getIt.get<NewsRepositoryImpl>()
+                      ))
+                    ..getNews()),
+            ], child: const NewsScreen()),
+          );
+        } else {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            routes: appRoutes,
+            theme: lightTheme,
+            home: MultiBlocProvider(providers: [
+              BlocProvider(
+                  create: (context) => GetNewsCubit(
+                      getNewsUseCase: GetNewsUseCase(
+                          repository: getIt.get<NewsRepositoryImpl>()
+                      ))
+                    ..getNews()),
+            ], child: const NewsScreen()),
+          );
         }
-      ),
+      }),
     );
   }
 }

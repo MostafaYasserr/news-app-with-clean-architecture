@@ -3,10 +3,10 @@ import 'package:news_app_with_clean_architecture/features/get_news/domain/entiti
 import '../../../../core/errors/failure.dart';
 import '../repositories/news_repository.dart';
 
-class GetNews {
+class GetNewsUseCase {
   final NewsRepository repository;
 
-  GetNews({required this.repository});
+  GetNewsUseCase({required this.repository});
 
   Future<Either<Failure, List<NewsEntity>>> call() async {
     return await repository.getNews();

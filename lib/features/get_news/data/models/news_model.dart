@@ -1,7 +1,6 @@
 import 'package:news_app_with_clean_architecture/core/databases/api/end_points.dart';
 import 'package:news_app_with_clean_architecture/features/get_news/data/models/sub_models/source_model.dart';
 import 'package:news_app_with_clean_architecture/features/get_news/domain/entities/news_entity.dart';
-import 'package:news_app_with_clean_architecture/features/get_news/domain/entities/sub_entities/source_entity.dart';
 
 class NewsModel extends NewsEntity {
   final String? url;
